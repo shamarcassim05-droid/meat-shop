@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>මස් කඩේ — Fresh Cuts Daily</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1a1512;
+    --bone:#f2ede4;
+    --bone-dim:#e8e0d0;
+    --red:#a8241c;
+    --red-dark:#7d1a14;
+    --gold:#c99a2e;
+    --leather:#3d2b1f;
+    --green:#3f6b3a;
+    --line: rgba(242,237,228,0.14);
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;background:var(--ink);color:var(--bone);font-family:'Inter',sans-serif;}
+  h1,h2,h3,.display{font-family:'Oswald',sans-serif;letter-spacing:.02em;text-transform:uppercase;}
+  .mono{font-family:'Space Mono',monospace;}
+  a{color:inherit;}
+  button{font-family:'Inter',sans-serif;cursor:pointer;border:none;}
+  ::selection{background:var(--red);color:var(--bone);}
+
+  /* NAV */
+  nav{display:flex;align-items:center;justify-content:space-between;padding:16px 28px;border-bottom:1px solid var(--line);position:sticky;top:0;background:rgba(26,21,18,0.96);backdrop-filter:blur(6px);z-index:50;}
+  .brand{display:flex;align-items:center;gap:10px;font-size:22px;font-weight:700;}
+  .brand .stamp{width:34px;height:34px;border:2px solid var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;transform:rotate(-8deg);color:var(--red);}
+  .nav-links{display:flex;gap:6px;align-items:center;}
+  .nav-btn{background:transparent;color:var(--bone-dim);padding:9px 16px;border-radius:3px;font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;}
+  .nav-btn.active{background:var(--red);color:var(--bone);}
+  .nav-btn:hover:not(.active){background:rgba(242,237,228,0.08);}
+  .cart-pill{position:relative;}
+  .cart-count{position:absolute;top:-6px;right:-6px;background:var(--gold);color:var(--ink);font-size:11px;font-weight:700;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;}
+
+  .wrap{max-width:1100px;margin:0 auto;padding:0 24px;}
+
+  /* HERO */
+  .hero{padding:70px 24px 50px;text-align:center;border-bottom:1px solid var(--line);background:
+    radial-gradient(ellipse at 50% -10%, rgba(168,36,28,0.25), transparent 60%);}
+  .hero .eyebrow{color:var(--gold);font-size:12px;letter-spacing:.22em;text-transform:uppercase;font-weight:600;}
+  .hero h1{font-size:56px;margin:10px 0 6px;line-height:1;}
+  .hero p{color:var(--bone-dim);font-size:16px;max-width:480px;margin:0 auto;}
+
+  /* AUTH */
+  .auth-box{max-width:380px;margin:60px auto;background:var(--bone);color:var(--leather);border-radius:6px;padding:34px;position:relative;}
+  .auth-box::before{content:"";position:absolute;top:0;left:0;right:0;height:6px;background:var(--red);border-radius:6px 6px 0 0;}
+  .auth-box h2{color:var(--leather);font-size:24px;margin-top:6px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-size:12px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;margin-bottom:5px;color:var(--leather);opacity:.75;}
+  .field input,.field select{width:100%;padding:11px 12px;border:1.5px solid #d8cfc0;border-radius:4px;font-size:14px;font-family:'Inter',sans-serif;background:#fff;color:var(--leather);}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--red);}
+  .btn-primary{width:100%;background:var(--red);color:var(--bone);padding:13px;border-radius:4px;font-weight:700;font-size:14px;text-transform:uppercase;letter-spacing:.04em;margin-top:6px;}
+  .btn-primary:hover{background:var(--red-dark);}
+  .switch-auth{text-align:center;margin-top:16px;font-size:13px;color:var(--leather);opacity:.8;}
+  .switch-auth b{color:var(--red);cursor:pointer;}
+  .auth-error{background:#fbe4e1;color:var(--red-dark);padding:9px 12px;border-radius:4px;font-size:13px;margin-bottom:12px;}
+  .auth-hint{font-size:11px;text-align:center;margin-top:14px;color:#9a8f7d;}
+
+  /* SHOP GRID */
+  .section-head{display:flex;justify-content:space-between;align-items:baseline;margin:38px 0 18px;}
+  .section-head h2{font-size:26px;margin:0;}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;}
+  .filter-chip{background:transparent;border:1px solid var(--line);color:var(--bone-dim);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;text-transform:uppercase;}
+  .filter-chip.active{background:var(--gold);color:var(--ink);border-color:var(--gold);}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:16px;padding-bottom:60px;}
+  .card{background:var(--bone);color:var(--leather);border-radius:6px;overflow:hidden;display:flex;flex-direction:column;position:relative;}
+  .card .top{height:110px;background:linear-gradient(135deg,#efe6d4,#e2d5bd);display:flex;align-items:center;justify-content:center;font-size:48px;position:relative;}
+  .card .cat-tag{position:absolute;top:8px;left:8px;background:var(--ink);color:var(--gold);font-size:10px;padding:3px 8px;border-radius:3px;text-transform:uppercase;letter-spacing:.05em;font-weight:700;}
+  .card .body{padding:14px 14px 16px;flex:1;display:flex;flex-direction:column;}
+  .card h3{font-size:16px;margin:0 0 4px;text-transform:none;letter-spacing:0;font-family:'Inter',sans-serif;font-weight:700;}
+  .card .price{color:var(--red);font-weight:700;font-size:15px;margin-bottom:2px;}
+  .card .stock{font-size:11px;color:#8a7c65;margin-bottom:10px;}
+  .card .stock.low{color:var(--red);font-weight:600;}
+  .add-btn{margin-top:auto;background:var(--ink);color:var(--bone);padding:9px;border-radius:4px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+  .add-btn:hover{background:var(--red);}
+  .sold-badge{position:absolute;top:8px;right:8px;background:var(--red);color:#fff;font-size:10px;padding:4px 9px;border-radius:3px;font-weight:700;text-transform:uppercase;transform:rotate(4deg);}
+  .add-btn:disabled{background:#c9bfa9;color:#8a7c65;cursor:not-allowed;}
+
+  /* CART DRAWER */
+  .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:90;display:none;}
+  .overlay.show{display:block;}
+  .drawer{position:fixed;top:0;right:0;bottom:0;width:380px;max-width:92vw;background:var(--bone);color:var(--leather);z-index:100;transform:translateX(100%);transition:transform .25s ease;display:flex;flex-direction:column;}
+  .drawer.show{transform:translateX(0);}
+  .drawer-head{padding:20px;border-bottom:1px solid #e0d5c2;display:flex;justify-content:space-between;align-items:center;}
+  .drawer-head h2{font-size:20px;margin:0;color:var(--leather);}
+  .close-x{background:none;font-size:22px;color:var(--leather);line-height:1;}
+  .drawer-items{flex:1;overflow-y:auto;padding:14px 20px;}
+  .cart-line{display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #ede4d3;}
+  .cart-line .emoji{font-size:26px;width:38px;text-align:center;}
+  .cart-line .info{flex:1;}
+  .cart-line .info b{font-size:13px;display:block;}
+  .cart-line .info span{font-size:12px;color:#8a7c65;}
+  .qty-ctrl{display:flex;align-items:center;gap:6px;}
+  .qty-ctrl button{width:24px;height:24px;background:#e5dac4;border-radius:3px;font-weight:700;}
+  .rm-btn{color:var(--red);font-size:11px;background:none;text-decoration:underline;margin-left:8px;}
+  .drawer-foot{padding:18px 20px;border-top:1px solid #e0d5c2;}
+  .drawer-foot .total-row{display:flex;justify-content:space-between;font-weight:700;font-size:16px;margin-bottom:12px;}
+  .empty-note{text-align:center;color:#9a8f7d;padding:40px 10px;font-size:13px;}
+
+  /* CHECKOUT MODAL */
+  .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:110;display:none;align-items:center;justify-content:center;padding:20px;}
+  .modal-bg.show{display:flex;}
+  .modal{background:var(--bone);color:var(--leather);border-radius:6px;padding:28px;max-width:420px;width:100%;max-height:88vh;overflow-y:auto;}
+  .modal h2{color:var(--leather);font-size:22px;margin-top:0;}
+  .pay-options{display:flex;flex-direction:column;gap:8px;margin-top:4px;}
+  .pay-opt{display:flex;align-items:center;gap:10px;border:1.5px solid #d8cfc0;border-radius:4px;padding:11px 12px;font-size:13px;cursor:pointer;}
+  .pay-opt.sel{border-color:var(--red);background:#fbf1ec;}
+
+  /* ORDERS */
+  .order-ticket{background:var(--bone);color:var(--leather);border-radius:6px;padding:18px 20px;margin-bottom:14px;position:relative;}
+  .order-ticket .row1{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px;}
+  .order-ticket .oid{font-size:12px;color:#9a8f7d;}
+  .status-badge{font-size:11px;font-weight:700;padding:5px 12px;border-radius:20px;text-transform:uppercase;letter-spacing:.03em;}
+  .st-Pending{background:#f0e0b0;color:#7d5f00;}
+  .st-Confirmed{background:#c9ddf0;color:#1a4d7d;}
+  .st-Preparing{background:#ecd0a8;color:#8a4b00;}
+  .st-Out-for-Delivery{background:#d3c9f0;color:#4a2d8a;}
+  .st-Delivered{background:#c6e4c2;color:#245c1e;}
+  .st-Cancelled{background:#f0c9c5;color:#7d1a14;}
+  .pay-Unpaid{background:#f0e0b0;color:#7d5f00;}
+  .pay-Paid{background:#c6e4c2;color:#245c1e;}
+  .pay-Refunded{background:#f0c9c5;color:#7d1a14;}
+  .order-items{font-size:13px;color:#5c4d3a;margin:8px 0;}
+  .order-track{display:flex;gap:0;margin-top:12px;}
+  .track-step{flex:1;text-align:center;font-size:10px;color:#b0a48e;position:relative;text-transform:uppercase;font-weight:600;}
+  .track-step .dot{width:9px;height:9px;border-radius:50%;background:#d8cfc0;margin:0 auto 4px;}
+  .track-step.done .dot{background:var(--green);}
+  .track-step.done{color:var(--green);}
+  .track-step::after{content:"";position:absolute;top:4px;left:50%;width:100%;height:2px;background:#d8cfc0;z-index:-1;}
+  .track-step:last-child::after{display:none;}
+  .track-step.done::after{background:var(--green);}
+
+  /* ADMIN */
+  .admin-tabs{display:flex;gap:8px;margin-bottom:22px;}
+  .admin-panel{background:var(--bone);color:var(--leather);border-radius:6px;padding:22px;margin-bottom:20px;}
+  .admin-panel h3{color:var(--leather);font-size:18px;margin-top:0;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .prod-admin-row{display:flex;align-items:center;gap:12px;padding:11px 0;border-bottom:1px solid #ede4d3;}
+  .prod-admin-row .emoji{font-size:24px;width:34px;}
+  .prod-admin-row .info{flex:1;}
+  .prod-admin-row .info b{display:block;font-size:14px;}
+  .prod-admin-row .info span{font-size:12px;color:#8a7c65;}
+  .tag-btn{padding:6px 12px;font-size:11px;font-weight:700;border-radius:4px;text-transform:uppercase;}
+  .tag-btn.sold{background:var(--red);color:#fff;}
+  .tag-btn.avail{background:var(--green);color:#fff;}
+  .del-btn{background:#e5dac4;color:var(--leather);padding:6px 10px;border-radius:4px;font-size:11px;}
+  .admin-order-row{border-bottom:1px solid #ede4d3;padding:14px 0;}
+  .admin-order-row select{padding:7px 10px;border-radius:4px;border:1.5px solid #d8cfc0;font-size:12px;font-family:'Inter',sans-serif;}
+  .stat-strip{display:flex;gap:14px;margin-bottom:20px;flex-wrap:wrap;}
+  .stat-box{background:var(--bone);color:var(--leather);border-radius:6px;padding:16px 20px;min-width:120px;}
+  .stat-box .num{font-size:26px;font-weight:700;font-family:'Space Mono',monospace;color:var(--red);}
+  .stat-box .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:#8a7c65;font-weight:600;}
+  .empty-state{text-align:center;padding:50px 20px;color:#9a8f7d;font-size:14px;}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:var(--green);color:#fff;padding:12px 22px;border-radius:5px;font-size:13px;font-weight:600;z-index:200;opacity:0;transition:opacity .25s;pointer-events:none;}
+  .toast.show{opacity:1;}
+  footer{text-align:center;padding:30px;color:#7a6f5c;font-size:12px;border-top:1px solid var(--line);}
+  @media(max-width:560px){.hero h1{font-size:38px;}.form-row{grid-template-columns:1fr;}}
+</style>
+</head>
+<body>
+
+<nav id="navbar"></nav>
+<div id="app"></div>
+<div class="overlay" id="overlay"></div>
+<div class="drawer" id="cartDrawer"></div>
+<div class="modal-bg" id="checkoutModal"></div>
+<div class="modal-bg" id="adminLoginModal"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------------- STATE ---------------- */
+let currentUser = null;   // {username, role}
+let cart = [];             // [{id,name,price,unit,emoji,qty}]
+let products = [];
+let orders = [];
+let authMode = 'login';    // login | signup
+let shopFilter = 'All';
+let selectedPayment = 'Cash on Delivery';
+let checkoutOpen = false;
+let cartOpen = false;
+let currentTab = 'shop';   // shop | orders | products-admin | orders-admin
+
+const STATUSES = ['Pending','Confirmed','Preparing','Out for Delivery','Delivered'];
+const PAYMENT_STATUSES = ['Unpaid','Paid','Refunded'];
+
+const DEFAULT_PRODUCTS = [
+  {id:'p1',name:'Fresh Chicken Whole',category:'Chicken',price:950,unit:'kg',stock:20,soldOut:false,emoji:'🍗'},
+  {id:'p2',name:'Chicken Breast Fillet',category:'Chicken',price:1150,unit:'kg',stock:15,soldOut:false,emoji:'🍗'},
+  {id:'p3',name:'Beef Cubes',category:'Beef',price:1800,unit:'kg',stock:10,soldOut:false,emoji:'🥩'},
+  {id:'p4',name:'Beef Steak Cut',category:'Beef',price:2200,unit:'kg',stock:8,soldOut:false,emoji:'🥩'},
+  {id:'p5',name:'Mutton Curry Cut',category:'Mutton',price:2600,unit:'kg',stock:6,soldOut:false,emoji:'🍖'},
+  {id:'p6',name:'Fresh Seer Fish',category:'Seafood',price:2400,unit:'kg',stock:5,soldOut:false,emoji:'🐟'},
+  {id:'p7',name:'Prawns (Medium)',category:'Seafood',price:1900,unit:'kg',stock:12,soldOut:false,emoji:'🦐'},
+  {id:'p8',name:'Chicken Sausages',category:'Processed',price:650,unit:'pack',stock:25,soldOut:false,emoji:'🌭'},
+];
+
+/* ---------------- STORAGE HELPERS ---------------- */
+/* Uses localStorage so data actually persists when this page is hosted as a
+   normal website (window.storage only exists inside Claude.ai artifact previews). */
+async function storageGet(key){
+  try{ const v = localStorage.getItem(key); return v ? {value:v} : null; }
+  catch(e){ console.error('storageGet failed', key, e); return null; }
+}
+async function storageSet(key, value){
+  try{ localStorage.setItem(key, value); return true; }
+  catch(e){ console.error('storageSet failed', key, e); return false; }
+}
+async function loadProducts(){
+  try{
+    const r = await storageGet('products');
+    products = r ? JSON.parse(r.value) : [];
+  }catch(e){ products = []; }
+  if(!products.length){
+    products = DEFAULT_PRODUCTS;
+    await storageSet('products', JSON.stringify(products));
+  }
+}
+async function saveProducts(){
+  await storageSet('products', JSON.stringify(products));
+}
+async function loadOrders(){
+  try{
+    const r = await storageGet('orders');
+    orders = r ? JSON.parse(r.value) : [];
+  }catch(e){ orders = []; }
+}
+async function saveOrders(){
+  await storageSet('orders', JSON.stringify(orders));
+}
+async function loadUsers(){
+  try{
+    const r = await storageGet('users');
+    return r ? JSON.parse(r.value) : [];
+  }catch(e){ return []; }
+}
+async function saveUsers(users){
+  await storageSet('users', JSON.stringify(users));
+}
+async function ensureSeedUsers(){
+  let users = await loadUsers();
+  if(!users.length){
+    users = [{username:'admin', password:'admin123123', role:'admin'}];
+    await saveUsers(users);
+  } else {
+    const admin = users.find(u=>u.username==='admin');
+    if(admin && admin.password !== 'admin123123'){ admin.password = 'admin123123'; await saveUsers(users); }
+  }
+}
+
+/* ---------------- TOAST ---------------- */
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2200);
+}
+
+/* ---------------- NAV ---------------- */
+function renderNav(){
+  const nav = document.getElementById('navbar');
+  if(!currentUser){
+    nav.innerHTML = `
+      <div class="brand"><div class="stamp">🔪</div>මස් කඩේ &nbsp;<span style="font-size:12px;color:#c99a2e;font-weight:600;">MEAT SHOP</span></div>
+      <div class="nav-links"><button class="nav-btn" title="Admin login" onclick="openAdminLogin()" style="font-size:16px;">⚙️</button></div>`;
+    return;
+  }
+  const isAdmin = currentUser.role === 'admin';
+  let links = '';
+  if(isAdmin){
+    links += navBtn('products-admin','Products');
+    links += navBtn('orders-admin','Orders');
+  } else {
+    links += navBtn('shop','Shop');
+    links += navBtn('orders','My Orders');
+    links += `<button class="nav-btn cart-pill" onclick="openCart()">🛒 Cart ${cart.length? `<span class="cart-count">${cart.reduce((a,c)=>a+c.qty,0)}</span>`:''}</button>`;
+  }
+  links += `<button class="nav-btn" onclick="logout()">Logout (${currentUser.username})</button>`;
+  nav.innerHTML = `
+    <div class="brand"><div class="stamp">🔪</div>මස් කඩේ &nbsp;<span style="font-size:12px;color:#c99a2e;font-weight:600;">${isAdmin?'ADMIN':'MEAT SHOP'}</span></div>
+    <div class="nav-links">${links}</div>`;
+}
+function navBtn(tab,label){
+  return `<button class="nav-btn ${currentTab===tab?'active':''}" onclick="switchTab('${tab}')">${label}</button>`;
+}
+function switchTab(tab){ currentTab = tab; renderApp(); }
+
+/* ---------------- AUTH VIEW ---------------- */
+function renderAuth(errorMsg){
+  const app = document.getElementById('app');
+  app.innerHTML = `
+    <div class="hero">
+      <div class="eyebrow">Fresh Cuts • Delivered Daily</div>
+      <h1>මස් කඩේ</h1>
+      <p>Order fresh chicken, beef, mutton & seafood straight to your door. Track every order in real time.</p>
+    </div>
+    <div class="auth-box">
+      <h2>${authMode==='login' ? 'Log In' : 'Sign Up'}</h2>
+      ${errorMsg ? `<div class="auth-error">${errorMsg}</div>` : ''}
+      <div class="field"><label>Email</label><input id="authUser" type="email" autocomplete="email" placeholder="you@example.com"/></div>
+      <div class="field"><label>Password</label><input id="authPass" type="password" autocomplete="${authMode==='login'?'current-password':'new-password'}"/></div>
+      <button class="btn-primary" onclick="submitAuth()">${authMode==='login'?'Log In':'Create Account'}</button>
+      <div class="switch-auth">
+        ${authMode==='login'
+          ? `New here? <b onclick="authMode='signup';renderAuth();">Sign up</b>`
+          : `Already have an account? <b onclick="authMode='login';renderAuth();">Log in</b>`}
+      </div>
+    </div>
+  `;
+}
+async function submitAuth(){
+  const username = document.getElementById('authUser').value.trim();
+  const password = document.getElementById('authPass').value;
+  if(!username || !password){ renderAuth('Please fill in both fields.'); return; }
+  if(authMode === 'signup' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(username)){
+    renderAuth('Please enter a valid email address.'); return;
+  }
+  let users = await loadUsers();
+  if(authMode === 'signup'){
+    if(users.find(u=>u.username.toLowerCase()===username.toLowerCase())){
+      renderAuth('An account with that email already exists.'); return;
+    }
+    users.push({username, password, role:'customer'});
+    await saveUsers(users);
+    currentUser = {username, role:'customer'};
+    showToast('Account created successfully!');
+    await afterLogin();
+  } else {
+    const u = users.find(u=>u.username.toLowerCase()===username.toLowerCase() && u.password===password);
+    if(!u){ renderAuth('Incorrect email or password.'); return; }
+    currentUser = {username:u.username, role:u.role};
+    await afterLogin();
+  }
+}
+function openAdminLogin(){
+  document.getElementById('adminLoginModal').innerHTML = `
+    <div class="modal">
+      <h2>Admin Login</h2>
+      <div id="adminLoginError"></div>
+      <div class="field"><label>Username</label><input id="adminUser" autocomplete="username"/></div>
+      <div class="field"><label>Password</label><input id="adminPass" type="password" autocomplete="current-password"/></div>
+      <button class="btn-primary" onclick="submitAdminLogin()">Log In</button>
+      <button class="btn-primary" style="background:#e5dac4;color:var(--leather);margin-top:8px;" onclick="closeAdminLogin()">Cancel</button>
+    </div>
+  `;
+  document.getElementById('adminLoginModal').classList.add('show');
+}
+function closeAdminLogin(){ document.getElementById('adminLoginModal').classList.remove('show'); }
+async function submitAdminLogin(){
+  const username = document.getElementById('adminUser').value.trim();
+  const password = document.getElementById('adminPass').value;
+  const errBox = document.getElementById('adminLoginError');
+  if(!username || !password){ errBox.innerHTML = `<div class="auth-error">Please fill in both fields.</div>`; return; }
+  const users = await loadUsers();
+  const u = users.find(u=>u.username.toLowerCase()===username.toLowerCase() && u.password===password && u.role==='admin');
+  if(!u){ errBox.innerHTML = `<div class="auth-error">Incorrect admin username or password.</div>`; return; }
+  currentUser = {username:u.username, role:u.role};
+  closeAdminLogin();
+  await afterLogin();
+}
+async function afterLogin(){
+  await loadProducts();
+  await loadOrders();
+  currentTab = currentUser.role==='admin' ? 'products-admin' : 'shop';
+  renderApp();
+  startPolling();
+  showToast(`Welcome, ${currentUser.username}!`);
+}
+function logout(){
+  currentUser = null; cart = []; stopPolling();
+  renderApp();
+}
+
+/* ---------------- SHOP VIEW ---------------- */
+function renderShop(){
+  const cats = ['All', ...new Set(products.map(p=>p.category))];
+  const filtered = shopFilter==='All' ? products : products.filter(p=>p.category===shopFilter);
+  return `
+    <div class="wrap">
+      <div class="section-head">
+        <h2>Today's Fresh Stock</h2>
+        <div class="filters">
+          ${cats.map(c=>`<button class="filter-chip ${shopFilter===c?'active':''}" onclick="setFilter('${c}')">${c}</button>`).join('')}
+        </div>
+      </div>
+      <div class="grid">
+        ${filtered.length ? filtered.map(p=>`
+          <div class="card">
+            <div class="top">${p.emoji}
+              <div class="cat-tag">${p.category}</div>
+              ${p.soldOut ? '<div class="sold-badge">Sold Out</div>' : ''}
+            </div>
+            <div class="body">
+              <h3>${p.name}</h3>
+              <div class="price">Rs. ${p.price} / ${p.unit}</div>
+              <div class="stock ${p.stock<5 && !p.soldOut ? 'low':''}">${p.soldOut ? 'Currently unavailable' : (p.stock<5 ? `Only ${p.stock} left` : `${p.stock} ${p.unit} in stock`)}</div>
+              <button class="add-btn" ${p.soldOut?'disabled':''} onclick="addToCart('${p.id}')">${p.soldOut?'Sold Out':'Add to Cart'}</button>
+            </div>
+          </div>`).join('') : `<div class="empty-state">No items in this category right now.</div>`}
+      </div>
+    </div>
+  `;
+}
+function setFilter(c){ shopFilter = c; renderApp(); }
+function addToCart(id){
+  const p = products.find(x=>x.id===id);
+  if(!p || p.soldOut) return;
+  const line = cart.find(c=>c.id===id);
+  if(line){ if(line.qty < p.stock) line.qty++; }
+  else cart.push({id:p.id,name:p.name,price:p.price,unit:p.unit,emoji:p.emoji,qty:1});
+  renderNav();
+  showToast(`Added ${p.name} to cart`);
+}
+
+/* ---------------- CART DRAWER ---------------- */
+function openCart(){ cartOpen = true; renderCartDrawer(); document.getElementById('overlay').classList.add('show'); document.getElementById('cartDrawer').classList.add('show'); }
+function closeCart(){ cartOpen = false; document.getElementById('overlay').classList.remove('show'); document.getElementById('cartDrawer').classList.remove('show'); }
+function renderCartDrawer(){
+  const total = cart.reduce((a,c)=>a+c.price*c.qty,0);
+  document.getElementById('cartDrawer').innerHTML = `
+    <div class="drawer-head"><h2>Your Cart</h2><button class="close-x" onclick="closeCart()">✕</button></div>
+    <div class="drawer-items">
+      ${cart.length ? cart.map(c=>`
+        <div class="cart-line">
+          <div class="emoji">${c.emoji}</div>
+          <div class="info"><b>${c.name}</b><span>Rs. ${c.price} / ${c.unit}</span></div>
+          <div class="qty-ctrl">
+            <button onclick="changeQty('${c.id}',-1)">−</button>
+            <span class="mono">${c.qty}</span>
+            <button onclick="changeQty('${c.id}',1)">+</button>
+          </div>
+          <button class="rm-btn" onclick="removeFromCart('${c.id}')">Remove</button>
+        </div>`).join('') : `<div class="empty-note">Your cart is empty.<br>Add some fresh cuts to get started.</div>`}
+    </div>
+    ${cart.length ? `
+    <div class="drawer-foot">
+      <div class="total-row"><span>Total</span><span class="mono">Rs. ${total}</span></div>
+      <button class="btn-primary" onclick="openCheckout()">Checkout</button>
+    </div>` : ''}
+  `;
+}
+function changeQty(id,delta){
+  const line = cart.find(c=>c.id===id);
+  const p = products.find(x=>x.id===id);
+  if(!line) return;
+  line.qty += delta;
+  if(p && line.qty > p.stock) line.qty = p.stock;
+  if(line.qty <= 0) cart = cart.filter(c=>c.id!==id);
+  renderCartDrawer(); renderNav();
+}
+function removeFromCart(id){ cart = cart.filter(c=>c.id!==id); renderCartDrawer(); renderNav(); }
+
+/* ---------------- CHECKOUT ---------------- */
+function openCheckout(){
+  if(!cart.length) return;
+  checkoutOpen = true;
+  const total = cart.reduce((a,c)=>a+c.price*c.qty,0);
+  const opts = ['Cash on Delivery','Card on Delivery (Simulated)','Bank Transfer'];
+  document.getElementById('checkoutModal').innerHTML = `
+    <div class="modal">
+      <h2>Checkout</h2>
+      <div class="field"><label>Delivery Address</label><input id="coAddress" placeholder="House no, street, city"/></div>
+      <div class="field"><label>Phone Number</label><input id="coPhone" placeholder="07X XXX XXXX"/></div>
+      <div class="field">
+        <label>Payment Method</label>
+        <div class="pay-options">
+          ${opts.map(o=>`<div class="pay-opt ${selectedPayment===o?'sel':''}" onclick="selectPayment('${o}')">
+            <input type="radio" name="pay" ${selectedPayment===o?'checked':''} readonly/> ${o}
+          </div>`).join('')}
+        </div>
+      </div>
+      <div style="font-size:13px;color:#8a7c65;margin:10px 0;">Total: <b class="mono" style="color:var(--red);font-size:16px;">Rs. ${total}</b></div>
+      <button class="btn-primary" onclick="placeOrder()">Place Order</button>
+      <button class="btn-primary" style="background:#e5dac4;color:var(--leather);margin-top:8px;" onclick="closeCheckout()">Cancel</button>
+    </div>
+  `;
+  document.getElementById('checkoutModal').classList.add('show');
+}
+function selectPayment(o){ selectedPayment = o; openCheckout(); }
+function closeCheckout(){ checkoutOpen=false; document.getElementById('checkoutModal').classList.remove('show'); }
+
+async function placeOrder(){
+  const address = document.getElementById('coAddress').value.trim();
+  const phone = document.getElementById('coPhone').value.trim();
+  if(!address || !phone){ showToast('Please fill in address and phone.'); return; }
+  const total = cart.reduce((a,c)=>a+c.price*c.qty,0);
+  const order = {
+    id: 'ORD' + Date.now().toString().slice(-8),
+    username: currentUser.username,
+    items: cart.map(c=>({id:c.id,name:c.name,qty:c.qty,price:c.price,unit:c.unit,emoji:c.emoji})),
+    total, address, phone, payment: selectedPayment,
+    status: 'Pending',
+    paymentStatus: 'Unpaid',
+    createdAt: new Date().toISOString()
+  };
+  // reduce stock
+  cart.forEach(c=>{
+    const p = products.find(x=>x.id===c.id);
+    if(p){ p.stock = Math.max(0, p.stock - c.qty); if(p.stock===0) p.soldOut = true; }
+  });
+  await saveProducts();
+  orders.push(order);
+  await saveOrders();
+  cart = [];
+  closeCheckout(); closeCart();
+  currentTab = 'orders';
+  renderApp();
+  showToast('Order placed! Track its status under My Orders.');
+}
+
+/* ---------------- MY ORDERS (customer) ---------------- */
+function renderOrdersCustomer(){
+  const mine = orders.filter(o=>o.username===currentUser.username).sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  return `
+    <div class="wrap">
+      <div class="section-head"><h2>My Orders</h2></div>
+      ${mine.length ? mine.map(o=>orderTicket(o)).join('') : `<div class="empty-state">No orders yet. Head to the Shop tab to order some fresh cuts.</div>`}
+    </div>
+  `;
+}
+function orderTicket(o){
+  const isCancelled = o.status === 'Cancelled';
+  const stepIdx = STATUSES.indexOf(o.status);
+  return `
+    <div class="order-ticket">
+      <div class="row1">
+        <div>
+          <div class="oid mono">#${o.id}</div>
+          <div style="font-size:12px;color:#8a7c65;">${new Date(o.createdAt).toLocaleString()}</div>
+        </div>
+        <span class="status-badge st-${o.status.replace(/ /g,'-')}">${o.status}</span>
+      </div>
+      <div class="order-items">${o.items.map(i=>`${i.emoji} ${i.name} ×${i.qty}`).join(', ')}</div>
+      <div style="font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">Total: Rs. ${o.total} &nbsp;•&nbsp; <span style="font-weight:400;color:#8a7c65;">${o.payment}</span>
+        <span class="status-badge pay-${o.paymentStatus||'Unpaid'}">${o.paymentStatus||'Unpaid'}</span>
+      </div>
+      ${!isCancelled ? `
+      <div class="order-track">
+        ${STATUSES.map((s,i)=>`<div class="track-step ${i<=stepIdx?'done':''}"><div class="dot"></div>${s}</div>`).join('')}
+      </div>` : `<div style="margin-top:10px;font-size:12px;color:var(--red);font-weight:600;">This order was cancelled.</div>`}
+    </div>
+  `;
+}
+
+/* ---------------- ADMIN: PRODUCTS ---------------- */
+function renderAdminProducts(){
+  return `
+    <div class="wrap">
+      <div class="section-head"><h2>Manage Products</h2></div>
+      <div class="admin-panel">
+        <h3>Add New Item</h3>
+        <div class="form-row">
+          <div class="field"><label>Name</label><input id="npName" placeholder="e.g. Duck Breast"/></div>
+          <div class="field"><label>Category</label><input id="npCat" placeholder="e.g. Chicken / Beef / Seafood"/></div>
+          <div class="field"><label>Price (Rs.)</label><input id="npPrice" type="number"/></div>
+          <div class="field"><label>Unit</label><input id="npUnit" placeholder="kg / piece / pack"/></div>
+          <div class="field"><label>Stock Qty</label><input id="npStock" type="number"/></div>
+          <div class="field"><label>Emoji Icon</label><input id="npEmoji" placeholder="🍗" maxlength="2"/></div>
+        </div>
+        <button class="btn-primary" onclick="addProduct()">Add Item</button>
+      </div>
+      <div class="admin-panel">
+        <h3>Current Stock (${products.length} items)</h3>
+        ${products.length ? products.map(p=>`
+          <div class="prod-admin-row">
+            <div class="emoji">${p.emoji}</div>
+            <div class="info"><b>${p.name}</b><span>${p.category} • Rs. ${p.price}/${p.unit} • Stock: ${p.stock}</span></div>
+            <button class="tag-btn ${p.soldOut?'sold':'avail'}" onclick="toggleSoldOut('${p.id}')">${p.soldOut?'Sold Out':'Available'}</button>
+            <button class="del-btn" onclick="deleteProduct('${p.id}')">Delete</button>
+          </div>`).join('') : `<div class="empty-state">No products yet.</div>`}
+      </div>
+    </div>
+  `;
+}
+async function addProduct(){
+  const name = document.getElementById('npName').value.trim();
+  const category = document.getElementById('npCat').value.trim() || 'Other';
+  const price = parseFloat(document.getElementById('npPrice').value);
+  const unit = document.getElementById('npUnit').value.trim() || 'kg';
+  const stock = parseInt(document.getElementById('npStock').value) || 0;
+  const emoji = document.getElementById('npEmoji').value.trim() || '🍖';
+  if(!name || !price){ showToast('Please enter at least name and price.'); return; }
+  products.push({id:'p'+Date.now(), name, category, price, unit, stock, soldOut: stock<=0, emoji});
+  await saveProducts();
+  renderApp();
+  showToast(`${name} added to shop.`);
+}
+async function toggleSoldOut(id){
+  const p = products.find(x=>x.id===id);
+  if(!p) return;
+  p.soldOut = !p.soldOut;
+  await saveProducts();
+  renderApp();
+}
+async function deleteProduct(id){
+  products = products.filter(x=>x.id!==id);
+  await saveProducts();
+  renderApp();
+}
+
+/* ---------------- ADMIN: ORDERS ---------------- */
+function renderAdminOrders(){
+  const sorted = [...orders].sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const pending = orders.filter(o=>o.status==='Pending').length;
+  const delivered = orders.filter(o=>o.status==='Delivered').length;
+  const revenue = orders.filter(o=>o.status!=='Cancelled').reduce((a,o)=>a+o.total,0);
+  return `
+    <div class="wrap">
+      <div class="section-head"><h2>Customer Orders</h2></div>
+      <div class="stat-strip">
+        <div class="stat-box"><div class="num mono">${orders.length}</div><div class="lbl">Total Orders</div></div>
+        <div class="stat-box"><div class="num mono">${pending}</div><div class="lbl">Pending</div></div>
+        <div class="stat-box"><div class="num mono">${delivered}</div><div class="lbl">Delivered</div></div>
+        <div class="stat-box"><div class="num mono">Rs.${revenue}</div><div class="lbl">Revenue</div></div>
+      </div>
+      <div class="admin-panel">
+        ${sorted.length ? sorted.map(o=>`
+          <div class="admin-order-row">
+            <div class="row1" style="display:flex;justify-content:space-between;">
+              <div>
+                <b>#${o.id}</b> <span style="color:#8a7c65;font-size:12px;">by ${o.username}</span><br>
+                <span style="font-size:12px;color:#8a7c65;">${new Date(o.createdAt).toLocaleString()} • ${o.phone} • ${o.address}</span>
+              </div>
+              <span style="display:flex;flex-direction:column;gap:5px;align-items:flex-end;">
+                <span class="status-badge st-${o.status.replace(/ /g,'-')}">${o.status}</span>
+                <span class="status-badge pay-${o.paymentStatus||'Unpaid'}">${o.paymentStatus||'Unpaid'}</span>
+              </span>
+            </div>
+            <div class="order-items">${o.items.map(i=>`${i.emoji} ${i.name} ×${i.qty}`).join(', ')} — <b>Rs. ${o.total}</b> (${o.payment})</div>
+            <div style="margin-top:8px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+              <div>
+                <label style="font-size:10px;text-transform:uppercase;color:#8a7c65;display:block;margin-bottom:3px;">Order Status</label>
+                <select onchange="updateOrderStatus('${o.id}', this.value)">
+                  ${[...STATUSES,'Cancelled'].map(s=>`<option value="${s}" ${o.status===s?'selected':''}>${s}</option>`).join('')}
+                </select>
+              </div>
+              <div>
+                <label style="font-size:10px;text-transform:uppercase;color:#8a7c65;display:block;margin-bottom:3px;">Payment Status</label>
+                <select onchange="updatePaymentStatus('${o.id}', this.value)">
+                  ${PAYMENT_STATUSES.map(s=>`<option value="${s}" ${(o.paymentStatus||'Unpaid')===s?'selected':''}>${s}</option>`).join('')}
+                </select>
+              </div>
+            </div>
+          </div>`).join('') : `<div class="empty-state">No orders placed yet.</div>`}
+      </div>
+    </div>
+  `;
+}
+async function updateOrderStatus(id, status){
+  const o = orders.find(x=>x.id===id);
+  if(!o) return;
+  o.status = status;
+  await saveOrders();
+  renderApp();
+  showToast(`Order #${id} marked ${status}`);
+}
+async function updatePaymentStatus(id, status){
+  const o = orders.find(x=>x.id===id);
+  if(!o) return;
+  o.paymentStatus = status;
+  await saveOrders();
+  renderApp();
+  showToast(`Order #${id} payment marked ${status}`);
+}
+
+/* ---------------- APP RENDER ---------------- */
+function renderApp(){
+  renderNav();
+  const app = document.getElementById('app');
+  if(!currentUser){ renderAuth(); return; }
+  if(currentUser.role === 'admin'){
+    app.innerHTML = currentTab==='orders-admin' ? renderAdminOrders() : renderAdminProducts();
+  } else {
+    if(currentTab==='orders') app.innerHTML = renderOrdersCustomer();
+    else app.innerHTML = renderShop();
+  }
+  app.innerHTML += `<footer>මස් කඩේ — Fresh cuts, honest prices. Built for real orders.</footer>`;
+}
+
+/* ---------------- REAL-TIME POLLING ---------------- */
+let pollHandle = null;
+function startPolling(){
+  stopPolling();
+  pollHandle = setInterval(async ()=>{
+    if(!currentUser) return;
+    const before = JSON.stringify(orders);
+    await loadOrders();
+    await loadProducts();
+    const after = JSON.stringify(orders);
+    if(before !== after && (currentTab==='orders' || currentTab==='orders-admin' || currentTab==='shop')){
+      renderApp();
+    }
+  }, 4000);
+}
+function stopPolling(){ if(pollHandle) clearInterval(pollHandle); pollHandle=null; }
+
+/* ---------------- INIT ---------------- */
+document.getElementById('overlay').addEventListener('click', closeCart);
+(async function init(){
+  try{
+    await ensureSeedUsers();
+    await loadProducts();
+    await loadOrders();
+  }catch(e){
+    console.error('Init error', e);
+    if(!products.length) products = DEFAULT_PRODUCTS;
+  }
+  renderApp();
+})();
+</script>
+</body>
+</html>
